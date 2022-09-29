@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .parent {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1px 1px;
+    }
+    .item {
+      background-color: lightskyblue;
+      border: 1px solid #fff;
+      padding: 5px 5px 5px 2em;
+      min-height: 250px;
+    }
+  </style>
+</head>
+<body style="font-family: sans-serif">
+<div style="margin-left: 10%;width: 75%;margin-right: auto">
+  <h2>Car's 'R' Us Client Demo - Version poor ;-)</h2>
+  <div class="parent">
+    <div class="item">
+      <h3>Show all Cars</h3>
+      <button id="btn-get-all">Get all</button>
+      <p id="all-cars-container"></p>
+    </div>
+    <div class="item">
+      <h3>Find a single Car</h3>
+      <label for="car-id-to-find">Id</label>&nbsp;<input placeholder="Input car ID" id="car-id-to-find"/>
+      <button id="btn-find-car-by-id">Find</button>
+      <p id="single-car-container"></p>
+    </div>
+    <div class="item">
+      <h3>Add a Car</h3>
+      <div><input placeholder="Input brand" id="brand"/></div>
+      <div><input placeholder="Input Model" id="model"/></div>
+      <div><input placeholder="Input price pr. day" id="price-pr-day"/></div>
+      <div><input placeholder="Input best discount" id="best-discount"/></div>
+      <br>
+      <button id="btn-add-new-car">Submit new item</button>
+      <p id="creation-message-container"></p>
+    </div>
+    <div class="item">
+      <h3>Edit a Car</h3>
+      <label for="text-for-id2">Id</label>&nbsp;<input placeholder="Input ID" id="text-for-id2"/>
+      <button id="btn-find-editable-car">Find item to edit</button>
+      <br><br>
+      <div><label for="brand-input">Brand </label><input placeholder="" id="brand-input"></div>
+      <div><label for="model-input">Model </label><input placeholder="" id="model-input"></div>
+      <div><label for="price-pr-day-input">Price pr. day </label><input placeholder="" id="price-pr-day-input"></div>
+      <div><label for="best-discount-input">Best discount </label><input placeholder="" id="best-discount-input"></div>
+      <button id="btn-submit-edited-car">Submit edited item</button>
+      <p>Use one of the two GET pages to verify that "something" was added</p>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+  document.getElementById("btn-get-all").onclick = (evt) => {
+    evt.preventDefault()
+    getAllCars()
+  }
+  document.getElementById("btn-find-car-by-id").onclick = (evt) => {
+    evt.preventDefault()
+    getSingleCar(document.getElementById("car-id-to-find").value)
+  }
+  document.getElementById("btn-add-new-car").onclick = (evt) => {
+    evt.preventDefault()
+    addNewCar(
+            document.getElementById("brand").value,
+            document.getElementById("model").value,
+            document.getElementById("price-pr-day").value,
+            document.getElementById("best-discount").value
+    )
+  }
+  document.getElementById("btn-find-editable-car").onclick = (evt) => {
+    evt.preventDefault()
+    findCarToEdit(document.getElementById("text-for-id2").value)
+  }
+  document.getElementById("btn-submit-edited-car").onclick= (evt) => {
+    evt.preventDefault()
+    editCar(
+            document.getElementById("text-for-id2").value,
+            findValueOrPlaceholder("brand-input"),
+            findValueOrPlaceholder("model-input"),
+            findValueOrPlaceholder("price-pr-day-input"),
+            findValueOrPlaceholder("best-discount-input")
+    )
+  }
+
+
+  function getAllCars() {
+    fetch("http://localhost:8080/api/cars")
+            .then(res => res.json())
+            .then(cars => {
+              document.getElementById("all-cars-container").innerHTML = cars
+                      .map(car => `<span><b>ID:</b> ${car.id} \t <b>Brand:</b> ${car.brand} \t <b>Model:</b> ${car.model} \t <b>Price pr. day:</b> ${car.pricePrDay}<br></span>`)
+                      .join("")
+            })
+  }
+  function getSingleCar(id) {
+    fetch("http://localhost:8080/api/cars/"+id)
+            .then(res => res.json())
+            .then(car => {
+              document.getElementById("single-car-container").innerHTML = `
+              <span><b>ID:</b> ${car.id} \t <b>Brand:</b> ${car.brand} \t <b>Model:</b> ${car.model} \t <b>Price pr. day:</b> ${car.pricePrDay}<br></span>`
+            })
+  }
+  function addNewCar(brand, model, pricePrDay, bestDiscount){
+    const carRequest = {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "brand": brand,
+        "model": model,
+        "pricePrDay": pricePrDay,
+        "bestDiscount": bestDiscount
+      })
+    }
+    fetch("http://localhost:8080/api/cars/",carRequest)
+            .then(res => res.json())
+            .then(car =>{
+              document.getElementById("creation-message-container").innerHTML = "Car with ID: "+car.id+" was successfully created."
+            })
+  }
+  function findCarToEdit(id){
+      fetch("http://localhost:8080/api/cars/"+id)
+              .then(res => res.json())
+              .then(car => {
+                document.getElementById("brand-input").placeholder = car.brand
+                document.getElementById("model-input").placeholder = car.model
+                document.getElementById("price-pr-day-input").placeholder = car.pricePrDay
+                document.getElementById("best-discount-input").placeholder = car.bestDiscount
+              })
+  }
+  function editCar(id, brand, model, pricePrDay, bestDiscount) {
+
+    const carRequest = {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "brand": brand,
+        "model": model,
+        "pricePrDay": pricePrDay,
+        "bestDiscount": bestDiscount
+      })
+    }
+    fetch("http://localhost:8080/api/cars/"+id,carRequest)
+  }
+  function findValueOrPlaceholder(inputName){
+    let valueToFind = document.getElementById(inputName).value
+    if (valueToFind===""){
+      valueToFind = document.getElementById(inputName).getAttribute("placeholder")
+    }
+    return valueToFind
+  }
+
+</script>
+</html>

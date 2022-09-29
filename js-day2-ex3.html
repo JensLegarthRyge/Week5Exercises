@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container" style="padding:1em;font-family: sans-serif">
+  <button id="initialize-btn">Load Data</button>
+  <ul id="ul1"></ul>
+  <form>
+    <div><input id="name-input" placeholder="Enter new name here"></div>
+    <div style="margin-top: 1em;"><span style="display: inline-block; width: 20em;">Manipulate the Array and re-render the UL</span>
+      <button id="btn-b1">Add Name</button>
+      <button id="btn-b2">Remove First</button>
+      <button id="btn-b3">Remove Last</button>
+    </div>
+  </form>
+</div>
+</body>
+
+<script>
+  const names = ["Lars", "Peter", "Jan", "Lise", "Janne"]
+
+  document.getElementById("initialize-btn").onclick = ()=>makeList()
+
+
+  document.getElementById("btn-b1").onclick = (evt) => {
+    evt.preventDefault()
+    const name = encode(document.getElementById("name-input").value)
+    names.push(name);
+    makeList();
+  }
+
+  document.getElementById("btn-b2").onclick = (evt) => {
+    evt.preventDefault()
+    names.shift()
+    makeList();
+  }
+
+  document.getElementById("btn-b3").onclick = (evt) => {
+    evt.preventDefault()
+    names.pop()
+    makeList();
+  }
+
+  function makeList() {
+    const lis = names.map(n => `<li>${n}</li>`).join("")
+    document.getElementById("ul1").innerHTML = lis
+  }
+
+  function encode(str) {
+    str = str.replace(/&/g, "&amp;");
+    str = str.replace(/>/g, "&gt;");
+    str = str.replace(/</g, "&lt;");
+    str = str.replace(/"/g, "&quot;");
+    str = str.replace(/'/g, "&#039;");
+    return str;
+  }
+
+</script>
+</html>

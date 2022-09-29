@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    .my-div {width: 25px; height: 25px;background-color:#cc0000; margin:1px;}
+  </style>
+
+</head>
+<body>
+<div id="outer">
+    <div id="d2" class="my-div" style="width: 100px"></div>
+    <div id="d3" class="my-div" style="width: 100px"></div>
+    <div id="d4" class="my-div" style="width: 100px"></div>
+    <div id="d1" class="my-div" style="width: 100px"></div>
+    <div id="d5" class="my-div" style="width: 100px"></div>
+    <div id="d6" class="my-div" style="width: 100px"></div>
+    <div id="d7" class="my-div" style="width: 100px"></div>
+    <div id="d9" class="my-div" style="width: 100px"></div>
+    <div id="d10" class="my-div" style="width: 100px"></div>
+    <div id="d11" class="my-div" style="width: 100px"></div>
+    <div id="d12" class="my-div" style="width: 100px"></div>
+    <div id="d13" class="my-div" style="width: 100px"></div>
+    <div id="d14" class="my-div" style="width: 100px"></div>
+    <div id="d15" class="my-div" style="width: 100px"></div>
+</div>
+
+<p id="p1"></p>
+
+</body>
+<script>
+    document.getElementById("outer").addEventListener("click",logDivName)
+
+    function logDivName (event){
+        document.getElementById("p1").innerHTML += "Hi from "+event.target.id+", "
+    }
+
+</script>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div id="d1" style="width: 100px;margin: 1px;">&nbsp;</div>
+<div id="d2" style="width: 100px;margin: 1px;">&nbsp;</div>
+<div id="d3" style="width: 100px;margin: 1px;">&nbsp;</div>
+<button id="b1">Randomize</button>
+</body>
+<script>
+  const coloredDivs = document.querySelectorAll("div")
+  const button = document.getElementById("b1")
+
+  changeColor(coloredDivs);
+
+  button.addEventListener("click", function (){changeColor(coloredDivs, true);})
+
+  function changeColor(objects, isRandom) {
+    if (isRandom === true) {
+      objects.forEach(object => object.style.backgroundColor = "#" + Math.floor(Math.random() * 16777215).toString(16))
+    } else
+      objects.forEach(object => object.style.backgroundColor = "#CC0000")
+  }
+
+</script>
+</html>
